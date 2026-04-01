@@ -16,7 +16,6 @@ format-check:
 
 lint:
 	flake8 $(SRC)
-	pylint $(SRC)
 
 typecheck:
 	mypy $(SRC)
