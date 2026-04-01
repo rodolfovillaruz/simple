@@ -20,6 +20,7 @@ from google.genai.types import (
 )
 
 from common import (
+    ConversationContext,
     StreamPrinter,
     create_parser,
     handle_streaming_error,
@@ -95,7 +96,7 @@ def main() -> None:
     "Main function"
 
     parser = create_parser(
-        description="Resume a file specified filename",
+        description="Resume a conversation with Gemini",
         model="gemini-3.1-pro-preview",
     )
     args = parser.parse_args()
@@ -104,14 +105,18 @@ def main() -> None:
 
     filename, messages, file_hash = load_conversation(args.conversation_file)
 
+    context = ConversationContext(
+        messages=messages,
+        filename=filename,
+        file_hash=file_hash,
+        model=args.model,
+    )
+
     run_conversation_loop(
         client,
         stream_gemini_response,
-        args.model,
-        messages,
         args,
-        filename,
-        file_hash,
+        context,
     )
 
 
