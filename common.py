@@ -10,6 +10,7 @@ import sys
 import threading
 import time
 import uuid
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -249,14 +250,21 @@ def get_colors() -> Dict[str, str]:
     return colors
 
 
+@dataclass
+class ConversationContext:
+    """Context for conversation loop execution."""
+
+    messages: List[MessageParam]
+    filename: Path
+    file_hash: str
+    model: str
+
+
 def run_conversation_loop(
     client: Any,
     stream_func: callable,
-    model: str,
-    messages: List[MessageParam],
     args: argparse.Namespace,
-    filename: Path,
-    file_hash: str,
+    context: ConversationContext,
 ) -> None:
     """
     Unified conversation loop for Claude and Gemini clients.
@@ -264,14 +272,11 @@ def run_conversation_loop(
     Args:
         client: The API client (Anthropic or Google GenAI)
         stream_func: Function that streams the response
-        model: Model name/identifier
-        messages: Conversation messages
         args: Parsed command-line arguments
-        filename: Conversation file path
-        file_hash: Original file hash for safety check
+        context: Conversation context containing messages, file info, etc.
     """
     if args.verbose > 0:
-        sys.stderr.write(f"Model: {model}\n\n")
+        sys.stderr.write(f"Model: {context.model}\n\n")
         sys.stderr.flush()
 
     question = get_question()
@@ -284,19 +289,24 @@ def run_conversation_loop(
     if args.verbose > 0:
         prompt_preview(question)
 
-    messages.append({"role": "user", "content": question})
+    context.messages.append({"role": "user", "content": question})
 
     if args.dry_run:
         sys.exit(0)
 
-    assistant_content = stream_func(client, model, messages, args)
-
-    messages.append({"role": "assistant", "content": assistant_content})
+    assistant_content = stream_func(
+        client, context.model, context.messages, args
+    )
+    context.messages.append(
+        {"role": "assistant", "content": assistant_content}
+    )
 
     sys.stderr.write("\n")
     sys.stderr.flush()
 
-    save_conversation_safely(messages, filename, file_hash)
+    save_conversation_safely(
+        context.messages, context.filename, context.file_hash
+    )
 
 
 def handle_streaming_error(

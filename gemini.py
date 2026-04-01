@@ -28,6 +28,19 @@ from common import (
 )
 
 
+def _build_gemini_config(args: argparse.Namespace) -> GenerateContentConfig:
+    """Build Gemini generation config from arguments."""
+    config_kwargs: Dict[str, Any] = {
+        "thinking_config": ThinkingConfig(
+            thinking_level=ThinkingLevel.HIGH,
+            include_thoughts=True,
+        )
+    }
+    if args.max_tokens:
+        config_kwargs["max_output_tokens"] = int(args.max_tokens)
+    return GenerateContentConfig(**config_kwargs)
+
+
 def stream_gemini_response(
     client: genai.Client,
     model: str,
@@ -39,24 +52,16 @@ def stream_gemini_response(
     assistant_parts = []
 
     # Convert messages to Gemini Content objects
-    contents = []
-    for msg in messages:
-        role = "model" if msg["role"] == "assistant" else msg["role"]
-        part = Part.from_text(text=msg["content"])
-        contents.append(Content(role=role, parts=[part]))
+    contents = [
+        Content(
+            role="model" if msg["role"] == "assistant" else msg["role"],
+            parts=[Part.from_text(text=msg["content"])],
+        )
+        for msg in messages
+    ]
 
     try:
-        config_kwargs: Dict[str, Any] = {
-            "thinking_config": ThinkingConfig(
-                thinking_level=ThinkingLevel.HIGH,
-                include_thoughts=True,
-            )
-        }
-        if args.max_tokens:
-            config_kwargs["max_output_tokens"] = int(args.max_tokens)
-
-        config = GenerateContentConfig(**config_kwargs)
-
+        config = _build_gemini_config(args)
         stream = client.models.generate_content_stream(
             contents=contents,
             model=model,
