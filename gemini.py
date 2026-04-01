@@ -43,7 +43,7 @@ def stream_gemini_response(
 
     try:
         stream = client.models.generate_content_stream(
-            contents=contents,
+            contents=contents,  # type: ignore[arg-type]
             model=model,
             config=config,
         )
