@@ -3,7 +3,7 @@ requires = ["setuptools>=65.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "simple-llm"
+name = "simple-llm-chat"
 version = "1.0.0"
 description = "The simplest way to context engineer. Minimal streaming CLI clients for Claude and Gemini."
 readme = "README.md"
