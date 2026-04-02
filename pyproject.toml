@@ -19,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Environment :: Console",
     "Intended Audience :: Developers",
@@ -44,13 +43,19 @@ dev = [
 ]
 
 [project.scripts]
-simple-claude = "claude:main"
-simple-gemini = "gemini:main"
+simple-claude = "simple_llm.claude:main"
+simple-gemini = "simple_llm.gemini:main"
 
 [project.urls]
 Homepage = "https://github.com/rodolfovillaruz/simple"
 "Bug Tracker" = "https://github.com/rodolfovillaruz/simple/issues"
 Repository = "https://github.com/rodolfovillaruz/simple.git"
+
+[tool.setuptools]
+packages = ["simple_llm"]
+
+[tool.setuptools.package-dir]
+"" = "src"
 
 [tool.black]
 line-length = 88
