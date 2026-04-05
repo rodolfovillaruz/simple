@@ -23,8 +23,8 @@ The entire idea: your conversation _is_ a file. You build context by editing tha
 ## Installation
 
 ```bash
-git clone https://github.com/rodolfovillaruz/simple.git
-cd simple
+git clone https://github.com/rodolfovillaruz/raw-llm.git
+cd raw-llm
 pip install anthropic google-genai
 ```
 

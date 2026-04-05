@@ -47,9 +47,9 @@ raw-claude = "raw_llm.claude:main"
 raw-gemini = "raw_llm.gemini:main"
 
 [project.urls]
-Homepage = "https://github.com/rodolfovillaruz/simple"
-"Bug Tracker" = "https://github.com/rodolfovillaruz/simple/issues"
-Repository = "https://github.com/rodolfovillaruz/simple.git"
+Homepage = "https://github.com/rodolfovillaruz/raw-llm"
+"Bug Tracker" = "https://github.com/rodolfovillaruz/raw-llm/issues"
+Repository = "https://github.com/rodolfovillaruz/raw-llm.git"
 
 [tool.setuptools]
 packages = ["raw_llm"]
