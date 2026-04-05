@@ -20,6 +20,7 @@ from common import (
     load_conversation,
     prompt_preview,
     save_conversation_safely,
+    spinning,
 )
 
 
@@ -30,24 +31,37 @@ def stream_claude_response(
     max_tokens: int,
 ) -> str:
     """
-    Stream the response from the Claude API.
+    Stream the response from the Claude API with extended thinking.
     Returns the full assistant content.
     """
     printer = StreamPrinter()
     assistant_content = []
 
     try:
-        # Anthropic requires max_tokens to be set
         actual_max_tokens = int(max_tokens) if max_tokens else 20000
+        budget_tokens = max(actual_max_tokens - 1024, 1024)
 
         with client.messages.stream(
             max_tokens=actual_max_tokens,
             messages=messages,
             model=model,
+            thinking={
+                "type": "enabled",
+                "budget_tokens": budget_tokens,
+            },
         ) as stream:
-            for text in stream.text_stream:
-                printer.write_content(text)
-                assistant_content.append(text)
+            for event in stream:
+                if event.type == "content_block_start":
+                    if event.content_block.type == "thinking":
+                        printer.write_reasoning("")  # activate reasoning color
+                    elif event.content_block.type == "text":
+                        pass
+                elif event.type == "content_block_delta":
+                    if event.delta.type == "thinking_delta":
+                        printer.write_reasoning(event.delta.thinking)
+                    elif event.delta.type == "text_delta":
+                        printer.write_content(event.delta.text)
+                        assistant_content.append(event.delta.text)
 
     except ConnectionError as e:
         printer.close()
