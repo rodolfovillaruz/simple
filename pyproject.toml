@@ -43,8 +43,11 @@ dev = [
 ]
 
 [project.scripts]
-raw-claude = "raw_llm.claude:main"
-raw-gemini = "raw_llm.gemini:main"
+haiku = "raw_llm.claude:main"
+claude = "raw_llm.claude:main"
+sonnet = "raw_llm.claude:main"
+opus = "raw_llm.claude:main"
+gemini = "raw_llm.gemini:main"
 
 [project.urls]
 Homepage = "https://github.com/rodolfovillaruz/raw-llm"
