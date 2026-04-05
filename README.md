@@ -4,6 +4,10 @@
 
 Minimal, streaming CLI clients for Claude and Gemini that keep your conversations in plain JSON files.
 
+[![PyPI version](https://img.shields.io/pypi/v/raw-llm)](https://pypi.org/project/raw-llm/)
+[![Python versions](https://img.shields.io/pypi/pyversions/raw-llm)](https://pypi.org/project/raw-llm/)
+[![License: MIT](https://img.shields.io/pypi/l/raw-llm)](https://pypi.org/project/raw-llm/)
+
 ## What is this?
 
 Raw LLM is a pair of thin Python scripts that talk to the Anthropic and Google GenAI APIs. No frameworks, no agents, no abstractions you don't need. Just a prompt, a streaming response, and a JSON file you can version, diff, edit, and pipe.
@@ -22,11 +26,13 @@ The entire idea: your conversation _is_ a file. You build context by editing tha
 
 ## Installation
 
-### From PyPI
+### From [PyPI](https://pypi.org/project/raw-llm/)
 
 ```bash
 pip install raw-llm
 ```
+
+This installs the `claude`, `sonnet`, `opus`, `haiku`, and `gemini` commands globally.
 
 ### From source
 
