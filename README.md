@@ -22,10 +22,26 @@ The entire idea: your conversation _is_ a file. You build context by editing tha
 
 ## Installation
 
+### From PyPI
+
+```bash
+pip install raw-llm
+```
+
+### From source
+
 ```bash
 git clone https://github.com/rodolfovillaruz/raw-llm.git
 cd raw-llm
-pip install anthropic google-genai
+pip install .
+```
+
+### Development install
+
+```bash
+git clone https://github.com/rodolfovillaruz/raw-llm.git
+cd raw-llm
+pip install -e ".[dev]"
 ```
 
 Set your API keys:
@@ -40,22 +56,22 @@ export GEMINI_API_KEY="..."       # or GOOGLE_API_KEY, per google-genai docs
 ### Start a new conversation
 
 ```bash
-python claude.py
+claude
 # Type your prompt, then press Ctrl+D to submit
 ```
 
 ```bash
-echo "Explain monads in one paragraph" | python claude.py
+echo "Explain monads in one paragraph" | claude
 ```
 
 ```bash
-python gemini.py
+gemini
 ```
 
 ### Resume an existing conversation
 
 ```bash
-python claude.py .prompt/some-conversation.json
+claude .prompt/some-conversation.json
 ```
 
 The JSON file contains the full message history. Edit it with any text editor to reshape context before your next turn.
@@ -63,31 +79,32 @@ The JSON file contains the full message history. Edit it with any text editor to
 ### Pipe a file as context
 
 ```bash
-cat code.py | python claude.py conversation.json
+cat code.py | claude conversation.json
 ```
 
 ### Switch models
 
 ```bash
 # By flag
-python claude.py -m claude-opus-4-6
+claude -m claude-opus-4-6
 
-# By symlink
-ln -s claude.py opus
-./opus
+# By command name
+opus
+haiku
+sonnet
 ```
 
-| Symlink name         | Default model          |
-| -------------------- | ---------------------- |
-| `claude.py` (default)| `claude-sonnet-4-6`    |
-| `claude-opus` / `opus`| `claude-opus-4-6`     |
-| `claude-haiku` / `haiku`| `claude-haiku-4-5`  |
-| `gemini.py` (default)| `gemini-3.1-pro-preview` |
+| Command              | Default model              |
+| -------------------- | -------------------------- |
+| `claude` / `sonnet`  | `claude-sonnet-4-6`        |
+| `opus`               | `claude-opus-4-6`          |
+| `haiku`              | `claude-haiku-4-5`         |
+| `gemini`             | `gemini-3.1-pro-preview`   |
 
 ### Options
 
 ```
-usage: claude.py [-h] [-n] [-v] [-m MODEL] [-t MAX_TOKENS] [-i] [conversation_file]
+usage: claude [-h] [-n] [-v] [-m MODEL] [-t MAX_TOKENS] [-i] [conversation_file]
 
 positional arguments:
   conversation_file         JSON file to resume (omit to start fresh)
@@ -123,11 +140,14 @@ You can create these files by hand, merge them, truncate them, or generate them 
 
 ```
 .
-├── claude.py       # Claude CLI client
-├── gemini.py       # Gemini CLI client
-├── common.py       # Shared utilities (streaming, I/O, conversation management)
-├── Makefile        # Formatting, linting, typing
-└── .prompt/        # Default directory for conversation files (auto-used if present)
+├── src/
+│   └── raw_llm/
+│       ├── claude.py       # Claude CLI client
+│       ├── gemini.py       # Gemini CLI client
+│       └── common.py       # Shared utilities (streaming, I/O, conversation management)
+├── pyproject.toml          # Package configuration and entry points
+├── Makefile                # Formatting, linting, typing
+└── .prompt/                # Default directory for conversation files (auto-used if present)
 ```
 
 ## Development
