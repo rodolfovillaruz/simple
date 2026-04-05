@@ -32,7 +32,7 @@ build: clean
 	python -m build
 
 publish: build
-	twine upload dist/*
+	twine upload --repository simple-llm-chat dist/*
 
 publish-test: build
 	twine upload --repository testpypi dist/*
