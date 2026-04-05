@@ -18,7 +18,7 @@ from google.genai.types import (
     ThinkingLevel,
 )
 
-from common import (
+from .common import (
     StreamPrinter,
     create_parser,
     get_question,

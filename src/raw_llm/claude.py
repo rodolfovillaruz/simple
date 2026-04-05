@@ -13,7 +13,7 @@ from typing import Iterable
 import anthropic
 from anthropic.types import MessageParam
 
-from common import (
+from .common import (
     StreamPrinter,
     create_parser,
     get_question,
