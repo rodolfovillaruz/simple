@@ -96,7 +96,9 @@ def stream_claude_response(
 def main() -> None:
     "Main function"
 
-    match Path(__file__).name:
+    command_name = Path(sys.argv[0]).name.lower()
+
+    match command_name:
         case "claude-opus" | "opus":
             model = "claude-opus-4-7"
         case "claude-haiku" | "haiku":
