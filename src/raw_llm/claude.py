@@ -77,7 +77,7 @@ def main() -> None:
 
     match Path(__file__).name:
         case "claude-opus" | "opus":
-            model = "claude-opus-4-6"
+            model = "claude-opus-4-7"
         case "claude-haiku" | "haiku":
             model = "claude-haiku-4-5"
         case _:
