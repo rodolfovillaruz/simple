@@ -24,6 +24,30 @@ from .common import (
 )
 
 
+def _build_thinking_config(model: str, max_tokens: int) -> dict:
+    """
+    Return the appropriate thinking configuration for the given model.
+
+    Claude Opus 4.7 and later models no longer accept manual extended thinking
+    (type: "enabled" with budget_tokens) and return a 400 error.  These models
+    require adaptive thinking instead.  For Claude Opus 4.6 and Sonnet 4.6,
+    manual mode is deprecated but still functional.
+    """
+    # Opus 4.7+ requires adaptive thinking; older opus (4.6) still accepts
+    # manual mode.  The startswith guard also covers future opus releases
+    # (4.8, 5.0, …) which will likewise require adaptive thinking.
+    if model.startswith("claude-opus") and not model.startswith(
+        "claude-opus-4-6"
+    ):
+        return {"type": "adaptive"}
+
+    budget_tokens = max(max_tokens - 1024, 1024)
+    return {
+        "type": "enabled",
+        "budget_tokens": budget_tokens,
+    }
+
+
 def stream_claude_response(
     client: anthropic.Anthropic,
     model: str,
@@ -39,16 +63,13 @@ def stream_claude_response(
 
     try:
         actual_max_tokens = int(max_tokens) if max_tokens else 20000
-        budget_tokens = max(actual_max_tokens - 1024, 1024)
+        thinking_config = _build_thinking_config(model, actual_max_tokens)
 
         with client.messages.stream(
             max_tokens=actual_max_tokens,
             messages=messages,
             model=model,
-            thinking={
-                "type": "enabled",
-                "budget_tokens": budget_tokens,
-            },
+            thinking=thinking_config,
         ) as stream:
             for event in stream:
                 if event.type == "content_block_start":
