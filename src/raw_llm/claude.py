@@ -20,7 +20,6 @@ from .common import (
     load_conversation,
     prompt_preview,
     save_conversation_safely,
-    spinning,
 )
 
 
