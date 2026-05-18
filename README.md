@@ -125,20 +125,34 @@ options:
 
 ## Conversation format
 
-Conversations are stored as a JSON array of message objects, the same shape both APIs understand:
+Conversations are stored as a JSON array of message objects. Each message
+carries the standard API fields plus metadata that Raw LLM writes automatically:
 
 ```json
 [
   {
     "role": "user",
-    "content": "What is context engineering?"
+    "content": "What is context engineering?",
+    "timestamp": "2025-01-15T10:23:45.123456+00:00"
   },
   {
     "role": "assistant",
-    "content": "Context engineering is the practice of ..."
+    "content": "Context engineering is the practice of ...",
+    "timestamp": "2025-01-15T10:23:47.654321+00:00",
+    "usage": { "input": 18, "output": 312 },
+    "model": "claude-sonnet-4-6"
   }
 ]
 ```
+
+| Field       | Added to    | Description                              |
+| ----------- | ----------- | ---------------------------------------- |
+| `timestamp` | every turn  | UTC time the message was appended (ISO-8601) |
+| `usage`     | `assistant` | `input` and `output` token counts for that turn |
+| `model`     | `assistant` | Model that produced the response         |
+
+Metadata fields are stripped automatically before the conversation is sent to
+the API, so you can safely edit or add them without breaking future turns.
 
 You can create these files by hand, merge them, truncate them, or generate them with other tools. Raw LLM doesn't care. It reads the array, appends your new message, streams the response, and appends that too.
 
